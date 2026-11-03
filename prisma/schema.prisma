@@ -19,4 +19,4 @@ model Produto {
   preco       Float
   categoriaId Int
   categoria   Categoria @relation(fields: [categoriaId], references: [id])
-}
+} 
