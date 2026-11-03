@@ -1,19 +1,40 @@
-import { AppError } from '../utils/appError.js';
+import { AppError } from '../utils/app-error.js';
 
-// SERVIÇO de Produto — REGRAS DE NEGÓCIO (inclui a regra que depende da Categoria).
-// Lance `new AppError(mensagem, status)` quando uma regra for violada.
-//
-// Regras ao criar:
-//   - o nome é OBRIGATÓRIO;
-//   - o preço deve ser um número MAIOR que zero;
-//   - a categoria informada precisa EXISTIR (regra do relacionamento 1-N) —
-//     se não existir, rejeite (ex.: 422).
-// Observação: preço chega do formulário como texto — converta para número antes.
-// Métodos: criar e listar.
 export class ProdutosService {
   constructor(produtosRepository, categoriasRepository) {
-    this.repo = produtosRepository;
-    this.categoriasRepo = categoriasRepository; // para checar se a categoria existe
+    this.produtosRepository = produtosRepository;
+    this.categoriasRepository = categoriasRepository;
   }
-  // TODO: criar(dados), listar().
+
+  async listar() {
+    return await this.produtosRepository.findAll();
+  }
+
+  async criar(dados) {
+    const { nome, preco, categoriaId } = dados;
+
+    if (!nome || nome.trim() === '') {
+      throw new AppError('O nome do produto é obrigatório.', 400);
+    }
+
+    const precoNum = Number(preco);
+    if (isNaN(precoNum) || precoNum <= 0) {
+      throw new AppError('O preço do produto deve ser maior que zero.', 400);
+    }
+
+    if (!categoriaId) {
+      throw new AppError('A categoria do produto é obrigatória.', 400);
+    }
+
+    const categoriaExistente = await this.categoriasRepository.findById(categoriaId);
+    if (!categoriaExistente) {
+      throw new AppError('A categoria informada não existe.', 400);
+    }
+
+    return await this.produtosRepository.create({
+      nome: nome.trim(),
+      preco: precoNum,
+      categoriaId: Number(categoriaId),
+    });
+  }
 }
