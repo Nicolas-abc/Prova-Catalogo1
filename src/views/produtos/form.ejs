@@ -1,11 +1,38 @@
-<%#
-  VIEW: formulário de produto. Recebe { titulo, valores, categorias, erros }.
-  Monte um <form method="POST" action="/produtos"> com:
-    - nome (texto, obrigatório);
-    - preço (número, obrigatório);
-    - categoria: um <select name="categoriaId"> com uma <option> para cada item de
-      `categorias` (é aqui que o relacionamento aparece na tela).
-  Reexiba `valores` e mostre a lista de `erros` quando houver.
-%>
-<h1><%= titulo %></h1>
-<!-- TODO: bloco de erros + formulário com nome, preço e o <select> de categoria -->
+<h1>Novo Produto</h1>
+
+<% if (erros && erros.length > 0) { %>
+  <div class="alert alert-danger">
+    <ul>
+      <% erros.forEach(erro => { %>
+        <li><%= erro %></li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<form action="/produtos" method="POST">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome do Produto</label>
+    <input type="text" class="form-control" id="nome" name="nome" value="<%= produto.nome || '' %>" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="preco" class="form-label">Preço</label>
+    <input type="number" step="0.01" class="form-control" id="preco" name="preco" value="<%= produto.preco || '' %>" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="categoriaId" class="form-label">Categoria</label>
+    <select class="form-select" id="categoriaId" name="categoriaId" required>
+      <option value="">Selecione uma categoria...</option>
+      <% categorias.forEach(cat => { %>
+        <option value="<%= cat.id %>" <%= String(produto.categoriaId) === String(cat.id) ? 'selected' : '' %>>
+          <%= cat.nome %>
+        </option>
+      <% }); %>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="/produtos" class="btn btn-secondary">Cancelar</a>
+</form>

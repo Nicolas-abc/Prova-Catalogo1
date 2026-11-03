@@ -1,21 +1,20 @@
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h1>Categorias</h1>
-  <a href="/categorias/nova" class="btn btn-primary">Nova Categoria</a>
-</div>
+<h1>Nova Categoria</h1>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nome</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% categorias.forEach(categoria => { %>
-      <tr>
-        <td><%= categoria.id %></td>
-        <td><%= categoria.nome %></td>
-      </tr>
-    <% }); %>
-  </tbody>
-</table>
+<% if (erros && erros.length > 0) { %>
+  <div class="alert alert-danger">
+    <ul>
+      <% erros.forEach(erro => { %>
+        <li><%= erro %></li>
+      <% }); %>
+    </ul>
+  </div>
+<% } %>
+
+<form action="/categorias" method="POST">
+  <div class="mb-3">
+    <label for="nome" class="form-label">Nome da Categoria</label>
+    <input type="text" class="form-control" id="nome" name="nome" value="<%= categoria.nome || '' %>" required>
+  </div>
+  <button type="submit" class="btn btn-success">Salvar</button>
+  <a href="/categorias" class="btn btn-secondary">Cancelar</a>
+</form>
