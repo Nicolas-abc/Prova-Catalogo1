@@ -43,7 +43,7 @@ export async function validarProduto(categoriasRepository) {
         produto: req.body,
         categorias,
       });
-    }
+    } 
 
     next();
   };
