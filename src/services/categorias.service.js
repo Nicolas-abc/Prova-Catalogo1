@@ -1,14 +1,18 @@
-import { AppError } from '../utils/appError.js';
+import { AppError } from '../utils/app-error.js';
 
-// SERVIÇO de Categoria — REGRAS DE NEGÓCIO.
-// Lance `new AppError(mensagem, status)` quando uma regra for violada.
-//
-// Regras:
-//   - o nome da categoria é OBRIGATÓRIO (ex.: 400 se faltar).
-// Métodos: criar e listar.
 export class CategoriasService {
   constructor(categoriasRepository) {
-    this.repo = categoriasRepository;
+    this.categoriasRepository = categoriasRepository;
   }
-  // TODO: criar(dados), listar().
+
+  async listar() {
+    return await this.categoriasRepository.findAll();
+  }
+
+  async criar(dados) {
+    if (!dados.nome || dados.nome.trim() === '') {
+      throw new AppError('O nome da categoria é obrigatório.', 400);
+    }
+    return await this.categoriasRepository.create({ nome: dados.nome.trim() });
+  }
 }
