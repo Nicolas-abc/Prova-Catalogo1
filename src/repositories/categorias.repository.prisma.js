@@ -1,11 +1,16 @@
-import { prisma } from '../config/database.js';
+import { PrismaClient } from '@prisma/client';
+const prisma = new PrismaClient();
 
-// REPOSITÓRIO de Categoria — a ÚNICA camada que conversa com o Prisma.
-// Implemente os métodos que o service vai precisar:
-//   - listar todas as categorias;
-//   - buscar uma categoria por id (usado para checar se a categoria existe);
-//   - criar uma categoria.
-// Dica: use `prisma.categoria.*`. Tudo é assíncrono.
 export class CategoriasRepositoryPrisma {
-  // TODO: implemente os métodos descritos acima.
+  async findAll() {
+    return await prisma.categoria.findMany({ orderBy: { id: 'asc' } });
+  }
+
+  async findById(id) {
+    return await prisma.categoria.findUnique({ where: { id: Number(id) } });
+  }
+
+  async create(dados) {
+    return await prisma.categoria.create({ data: { nome: dados.nome } });
+  }
 }
